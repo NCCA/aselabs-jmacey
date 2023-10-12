@@ -7,3 +7,11 @@ TEST(Image,constructDefault)
     EXPECT_EQ(img.height(),0);
     EXPECT_EQ(img.pixels(),nullptr);
 }
+
+TEST(Image,constructUser)
+{
+    Image img(10,20);
+    EXPECT_EQ(img.width(),10);
+    EXPECT_EQ(img.height(),20);
+
+}

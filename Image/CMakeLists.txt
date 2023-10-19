@@ -6,6 +6,8 @@ endif()
 
 project(Image_build)
 set(CMAKE_CXX_STANDARD 17)
+find_package(OpenImageIO CONFIG REQUIRED)
+find_package(Boost COMPONENTS filesystem thread)
 
 add_executable(Image)
 target_include_directories(Image PRIVATE include)
@@ -14,7 +16,8 @@ target_sources(Image PRIVATE
         src/Image.cpp
         include/Image.h
         include/RGBA.h)
-
+target_link_libraries(Image PRIVATE OpenImageIO::OpenImageIO Boost::filesystem
+Boost::thread)
 ### Testing Code
 find_package(GTest CONFIG REQUIRED)
 include(GoogleTest)
@@ -29,5 +32,7 @@ target_sources(ImageTests PRIVATE
         include/Image.h
         include/RGBA.h
 )
-target_link_libraries(ImageTests PRIVATE GTest::gtest GTest::gtest_main)
+target_link_libraries(ImageTests PRIVATE GTest::gtest GTest::gtest_main OpenImageIO::OpenImageIO
+        Boost::filesystem
+        Boost::thread)
 gtest_discover_tests(ImageTests)

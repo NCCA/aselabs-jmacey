@@ -82,7 +82,7 @@ TEST(Image,savePNG)
 {
     {
         Image img(512, 512, 255, 0, 0, 255);
-        EXPECT_TRUE(img.save("red.png"));
+        EXPECT_TRUE(img.save("red.exr"));
     }
     {
         Image img(512, 512, 0, 255, 0, 255);

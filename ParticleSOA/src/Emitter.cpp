@@ -25,8 +25,8 @@ void Emitter::resetParticle(size_t _index)
   m_dir[_index] = m_emitDir * ngl::Random::randomPositiveNumber()+ randomVectorOnSphere() * m_spread;
   m_dir[_index].m_y = std::abs(m_dir[_index].m_y);
   m_colour[_index]=ngl::Random::getRandomColour3();
-  m_life[_index] = 200 + static_cast<int>(ngl::Random::randomPositiveNumber(1000.0f));
-  m_particlePos[_index].m_w = 0.01f;
+  m_life[_index] = 10 + static_cast<int>(ngl::Random::randomPositiveNumber(2000.0f));
+  m_particlePos[_index].m_w = 0.1f;
   m_state[_index] = ParticleState::Dead;
 }
 
@@ -43,9 +43,6 @@ void Emitter::reset()
 
 void Emitter::birthParticles()
 {
- auto dont = static_cast<int>(ngl::Random::randomPositiveNumber(100.0f));
-  if(dont <=80)
-    return;
   auto births = 0 + static_cast<int>(ngl::Random::randomPositiveNumber(m_numPerFrame));
   for(size_t i=0; i<births; ++i)
   {
@@ -62,7 +59,8 @@ void Emitter::birthParticles()
 
 }
 
-Emitter::Emitter(ngl::Vec3 _pos,size_t _numParticles) : m_pos{_pos}, m_numParticles{_numParticles}
+Emitter::Emitter(ngl::Vec3 _pos,size_t _numParticles, float _spread,size_t _maxAlive,size_t _maxUpdate) :
+    m_pos{_pos}, m_numParticles{_numParticles},m_spread{_spread},m_maxAlive{_maxAlive},m_numPerFrame{_maxUpdate}
 {
   m_particlePos.resize(_numParticles);
   m_dir.resize(_numParticles);
@@ -123,7 +121,7 @@ void Emitter::addParticles(size_t _num)
 
 void Emitter::draw() const
 {
-
+  if(m_particlePos.size() == 0) return ;
   m_vao->bind();
   m_vao->setData(0,ngl::MultiBufferVAO::VertexData(m_particlePos.size()*sizeof(ngl::Vec4),m_particlePos[0].m_x));
   m_vao->setVertexAttributePointer(0,4,GL_FLOAT,0,0);
@@ -165,13 +163,18 @@ void Emitter::update(float _delta)
         m_particlePos[i] += m_dir[i] * 0.5f;
         m_life[i] -=1;
         m_particlePos[i].m_w+=0.5f;
-        m_particlePos[i].m_w=std::clamp(m_particlePos[i].m_w,0.0f,12.0f);
+        m_particlePos[i].m_w=std::clamp(m_particlePos[i].m_w,1.0f,6.0f);
         if(m_particlePos[i].m_y <= 0.0f || m_life [i] <=0)
         {
           resetParticle(i);
         }
     }
 
+}
+
+void Emitter::move(const ngl::Vec3 &_dp)
+{
+    m_pos+=_dp;
 }
 
 

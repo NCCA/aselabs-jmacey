@@ -13,13 +13,14 @@
 class Emitter
 {
 public :
-    Emitter(ngl::Vec3 _pos,size_t _numParticles);
+    Emitter(ngl::Vec3 _pos,size_t _numParticles, float _spread,size_t _maxAlive,size_t _maxUpdate);
     size_t numParticles() const;
     ngl::Vec3 getPosition() const;
     void draw() const;
     void update(float _delta);
     void reset();
     void addParticles(size_t _num);
+    void move(const ngl::Vec3 &_dp);
 private :
     [[nodiscard]] ngl::Vec3 randomVectorOnSphere(float _radius = 1.0f);
     void resetParticle(size_t _index);

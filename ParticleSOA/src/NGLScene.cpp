@@ -12,7 +12,7 @@
 NGLScene::NGLScene()
 {
   // re-size the widget to that of the parent (in this case the GLFrame passed in on construction)
-  setTitle("Blank NGL");
+  setTitle("Particle SOA");
 }
 
 
@@ -42,17 +42,15 @@ void NGLScene::initializeGL()
   // enable multisampling for smoother drawing
   glEnable(GL_MULTISAMPLE);
 
-  m_emitter=std::make_unique<Emitter>(ngl::Vec3(0.0f,0.0f,0.0f),100000);
+  m_emitter=std::make_unique<Emitter>(ngl::Vec3(0.0f,0.0f,0.0f),10000,1.5f,10000,200);
 
   ngl::ShaderLib::loadShader("ParticleShader","shaders/ParticleVertex.glsl","shaders/ParticleFragment.glsl");
   ngl::ShaderLib::use("ParticleShader");
-  m_view=ngl::lookAt({0,0,24},{0,0,0},{0,1,0});
+  m_view=ngl::lookAt({0,20,24},{0,0,0},{0,1,0});
   ngl::ShaderLib::setUniform("MVP",m_project*m_view);
   startTimer(10);
   ngl::VAOPrimitives::createLineGrid("floor",40,40,10);
-
   m_previousTime = std::chrono::steady_clock::now();
-
 }
 
 
@@ -101,6 +99,10 @@ void NGLScene::keyPressEvent(QKeyEvent *_event)
   break;
   case Qt::Key_R : m_emitter->reset(); break;
   case Qt::Key_1 : m_emitter->addParticles(200); break;
+  case Qt::Key_Left : m_emitter->move({-0.1f,0,0}); break;
+  case Qt::Key_Right : m_emitter->move({0.1f,0,0}); break;
+  case Qt::Key_Up : m_emitter->move({0,0,-0.1f}); break;
+  case Qt::Key_Down : m_emitter->move({0,0,0.1f}); break;
   default : break;
   }
   // finally update the GLWindow and re-draw
